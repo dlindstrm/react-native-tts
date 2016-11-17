@@ -28,6 +28,14 @@ class Tts extends NativeEventEmitter {
     }
   }
 
+  speakWithOptions(text, options) {
+    if(Platform.OS === 'ios') {
+      return TextToSpeech.speak(text, options);
+    } else {
+      return TextToSpeech.speak(text);
+    }
+  }
+
   stop(onWordBoundary) {
     if(Platform.OS === 'ios') {
       return TextToSpeech.stop(onWordBoundary);

@@ -91,6 +91,37 @@ RCT_EXPORT_METHOD(speak:(NSString *)text
     resolve([NSNumber numberWithUnsignedLong:utterance.hash]);
 }
 
+
+RCT_EXPORT_METHOD(speakWithOptions:(NSString *)text
+                  options:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    if(!text) {
+        reject(@"no_text", @"No text to speak", nil);
+        return;
+    }
+
+    AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:text];
+
+    if (options) {
+        if(options[@"voiceId"]) {
+            utterance.voice = [AVSpeechSynthesisVoice voiceWithIdentifier:options[@"voiceId"]];
+        } else if (_defaultVoice) {
+            utterance.voice = _defaultVoice;
+        }
+
+        if (options[@"rate"]) {
+            utterance.rate = [options[@"rate"] floatValue];
+        }
+    }
+
+    [_textToSpeechDelegate willBeginSpeakingWithOptions:options];
+
+    [self.synthesizer speakUtterance:utterance];
+    resolve([NSNumber numberWithUnsignedLong:utterance.hash]);
+}
+
 RCT_EXPORT_METHOD(stop:(BOOL *)onWordBoundary resolve:(RCTPromiseResolveBlock)resolve reject:(__unused RCTPromiseRejectBlock)reject)
 {
     AVSpeechBoundary *boundary;
