@@ -30,7 +30,7 @@ class Tts extends NativeEventEmitter {
 
   speakWithOptions(text, options) {
     if(Platform.OS === 'ios') {
-      return TextToSpeech.speak(text, options);
+      return TextToSpeech.speakWithOptions(text, options);
     } else {
       return TextToSpeech.speak(text);
     }
